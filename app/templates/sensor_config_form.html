@@ -1,0 +1,52 @@
+<!-- templates/sensor_config_form.html -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Configurar Canais e Sensores</title>
+    <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <h2>Configurar Canais e Sensores</h2>
+        <form id="sensorConfigForm" method="post" action="{% url 'sensor_config_form' %}">
+            {% csrf_token %}
+
+            <label for="numCanais">Quantidade de Canais:</label>
+            <input type="number" id="numCanais" name="numCanais" min="1" required><br><br>
+
+            <div id="sensoresInputs">
+                <!-- Aqui serão adicionados os campos de entrada para sensores -->
+            </div>
+
+            <button type="button" onclick="addCanaisSensores()" class="btn btn-primary">Adicionar Canais e Sensores</button>
+            <button type="submit" class="btn btn-success">Salvar Configuração</button>
+        </form>
+    </div>
+
+    <script>
+        function addCanaisSensores() {
+            var numCanais = document.getElementById('numCanais').value;
+            var sensoresInputs = document.getElementById('sensoresInputs');
+            sensoresInputs.innerHTML = '';  // Limpar o conteúdo anterior
+
+            for (var canal = 1; canal <= numCanais; canal++) {
+                var label = document.createElement('label');
+                label.textContent = `Canal ${canal}: Quantidade de Sensores`;
+
+                var input = document.createElement('input');
+                input.type = 'number';
+                input.name = `sensores_canal_${canal}`;
+                input.min = '1';
+                input.required = true;
+
+                sensoresInputs.appendChild(label);
+                sensoresInputs.appendChild(input);
+                sensoresInputs.appendChild(document.createElement('br'));
+            }
+        }
+    </script>
+</body>
+</html>

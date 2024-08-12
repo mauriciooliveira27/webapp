@@ -1,0 +1,88 @@
+{% extends "base.html" %}
+{% load bootstrap4 %}
+{% load static %}
+{% block content %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+
+<div class="container">
+    {% csrf_token %}
+    <h2>Definição de Conexões de Cordões e Sensores</h2>
+    <form action="{% url 'cadastrar-cordoes' %}" method="POST" id="cordaoForm">
+        {% csrf_token %}
+        <table class="table table-responsive-md" id="cordaoTable">
+            <thead>
+                <tr>
+                    <th>Cod Placa</th>
+                    <th>ID Placa</th>
+                    <th>Cordão Físico</th>
+                    <th>Canal</th>
+                    <th>Sensores</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cordao in cordoes %}
+                <tr>
+                    <td>
+                        <input type="text" class="form-control" name="cod_placa[]" value="{{ cordao.cod_placa }}" >
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="id_placa[]" value="{{ cordao.placa_id }}" >
+                    </td>
+                    <td>
+                        <input type="text" class="form-control" name="cordao-fisico[]" value="{{ cordao.cordao_fisico }}" >
+                    </td>
+                    <td>
+                        {% if cordao.canal_placa is not None %}
+                        <input type="text" class="form-control" name="canal[]" value="{{ cordao.canal_placa }}">
+                        {% else %}
+                        <input type="text" class="form-control" name="canal[]" value="">
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if cordao.sensor_placa is not None %}
+                        <input type="text" class="form-control" name="sensor[]" value="{{ cordao.sensor_placa }}">
+                        {% else %}
+                        <input type="text" class="form-control" name="sensor[]" value="">
+                        {% endif %}
+                    </td>
+                    <td>
+                        <a class="btn btn-danger" href="{% url 'delete-cordao' pk=cordao.id %}">Deletar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary" id="adicionarCampoBtn">Adicionar campo</button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="button" class="btn btn-warning"><a href="{% url 'home' %}" class="text-white">Cancelar</a></button>
+    </form>
+</div>
+
+<script>
+    $(document).ready(function() {
+        // Função para adicionar um novo campo dinamicamente
+        function adicionarCampo() {
+            var newRow = '<tr>' +
+                            '<td><input type="text" class="form-control" name="cod_placa[]" ></td>' +
+                            '<td><input type="text" class="form-control" name="id_placa[]" ></td>' +
+                            '<td><input type="text" class="form-control" name="cordao-fisico[]" ></td>' +
+                            '<td><input type="text" class="form-control" name="canal[]"></td>' +
+                            '<td><input type="text" class="form-control" name="sensor[]"></td>' +
+                            '<td><button type="button" class="btn btn-danger removerCampoBtn">Remover</button></td>' +
+                        '</tr>';
+            $('#cordaoTable tbody').append(newRow);
+        }
+
+        // Adiciona um novo campo quando o botão é clicado
+        $('#adicionarCampoBtn').on('click', function() {
+            adicionarCampo();
+        });
+
+        // Remove o campo quando o botão de remover é clicado
+        $('#cordaoTable').on('click', '.removerCampoBtn', function() {
+            $(this).closest('tr').remove();
+        });
+    });
+    </script>
+{% endblock %}

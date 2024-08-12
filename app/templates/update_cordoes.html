@@ -1,0 +1,56 @@
+{% load bootstrap4 %}
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    {% include "nav.html" %}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Cadastro de Cordão e Sensor</title>
+    {% bootstrap_css %}
+    <link rel="stylesheet" href="{% static 'css/registro_cordoes.css' %}">
+    <link rel="stylesheet" href="{% static 'css/cadastrar_cordoes.css' %}">
+</head>
+<body>
+
+<div class="container">
+    <h2>Definição de Conexões de Cordões e Sensores</h2>
+    <form action="{% url 'update-cordoes' %}" method="POST" id="cordaoForm">
+        {% csrf_token %}
+        <table id="cordaoTable" class="table table-striped">
+            <thead>
+                <tr>
+                    <th>Cod Placa</th>
+                    <th>ID Placa</th>
+                    <th>Cordão Físico</th>
+                    <th>Canal</th>
+                    <th>Sensores</th>
+                    <th>Ação</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for cordao in cordoes %}
+                <tr>
+                    <td><input type="text" id="cod_placa" name="cod_placa" value="{{ cordao.cod_placa }}" readonly></td>
+                    <td><input type="text" id="id_placa" name="id_placa" value="{{ cordao.placa_id }}" readonly></td>
+                    <td><input type="text" id="cordao_fisico" name="cordao_fisico" value="{{ cordao.cordao_fisico }}" readonly></td>
+                    <td><input type="text" id="canal" name="canal" value="" ></td>
+                    <td><input type="text" id="sensor" name="sensor" value="" ></td>
+                    <td>
+                        <a href="{% url 'delete-cordao' pk=cordao.id %}" class="btn btn-danger">Deletar</a>
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+        <button type="button" class="btn btn-primary"><a href="{% url 'cadastrar-cordoes' %}" class="btn-link">Cadastrar Cordão</a></button>
+        <button type="submit" class="btn btn-primary">Salvar</button>
+        <button type="submit" class="btn btn-danger">Resetar</button>
+        <a href="{% url 'home' %}" class="btn btn-warning">Cancelar</a>
+    </form>
+</div>
+
+{% bootstrap_javascript jquery='full' %}
+</body>
+</html>

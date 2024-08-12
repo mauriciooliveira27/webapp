@@ -1,0 +1,106 @@
+{% extends 'base.html' %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+    <h1>Serviços</h1>
+    {% for servico in servicos %}
+    <div class="card mb-3">
+        <div class="card-body">
+            <h5 class="card-title">{{ servico.nome }}</h5>
+
+            <form method="post" action="{% url 'servico-start' %}" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="nome_servico" value="{{ servico.nome }}">
+                <button type="submit" class="btn btn-success start-button mr-2" data-servico="{{ servico.id }}">Start</button>
+            </form>
+
+            <form method="post" action="{% url 'servico-stop' %}" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="nome_servico" value="{{ servico.nome }}">
+                <button type="submit" class="btn btn-danger stop-button mr-2" data-servico="{{ servico.id }}">Stop</button>
+            </form>
+
+            {% if servico.nome == 'task_read_temp' %}
+            <button class="btn btn-primary mr-2 fetch-data" data-servico="{{ servico.id }}">
+                <span class="spinner-border spinner-border-sm d-none" role="status" aria-hidden="true"></span>
+                <span class="sr-only">Loading...</span>
+                Test
+            </button>
+            {% endif %}
+            <div class="fetch-data-indicator d-none" id="loading{{ servico.id }}">
+                Loading...
+            </div>
+            <pre id="result{{ servico.id }}"></pre> <!-- Adicione um ID exclusivo para cada resultado -->
+
+            <form method="post" action="{% url 'servico-status' %}" class="d-inline">
+                {% csrf_token %}
+                <input type="hidden" name="nome_servico" value="{{ servico.nome }}">
+                <button type="submit" class="btn btn-info">Status</button>
+            </form>
+            
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<style>
+    .neon {
+        text-shadow: 0 0 5px #00ff00, 0 0 10px #00ff00, 0 0 20px #00ff00, 0 0 40px #00ff00, 0 0 80px #00ff00, 0 0 90px #00ff00, 0 0 100px #00ff00, 0 0 150px #00ff00;
+    }
+</style>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function() {
+        document.querySelectorAll('.start-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.classList.add("neon");
+            });
+        });
+
+        document.querySelectorAll('.stop-button').forEach(function(button) {
+            button.addEventListener('click', function() {
+                this.classList.remove("neon");
+            });
+        });
+
+        document.querySelectorAll('.fetch-data').forEach(function(button) {
+            button.addEventListener('click', function() {
+                const servicoId = this.getAttribute('data-servico');
+                const resultElement = document.getElementById('result' + servicoId);
+                const loadingIndicator = document.getElementById('loading' + servicoId);
+
+                // Esconde o resultado atual e mostra o indicador de carregamento
+                resultElement.classList.add('d-none');
+                loadingIndicator.classList.remove('d-none');
+
+                fetchAsyncData(servicoId)
+                    .then(data => {
+                        // Esconde o indicador de carregamento e mostra os dados carregados
+                        resultElement.textContent = JSON.stringify(data, null, 2);
+                        resultElement.classList.remove('d-none');
+                        loadingIndicator.classList.add('d-none');
+                    })
+                    .catch(error => {
+                        // Em caso de erro, mostra uma mensagem de erro
+                        resultElement.textContent = 'Error: ' + error.message;
+                        resultElement.classList.remove('d-none');
+                        loadingIndicator.classList.add('d-none');
+                    });
+            });
+        });
+    });
+
+    async function fetchAsyncData(servicoId) {
+        try {
+            const response = await fetch('/async-class-view');
+            if (!response.ok) {
+                throw new Error('Network response was not ok');
+            }
+            return await response.json();
+        } catch (error) {
+            throw error;
+        }
+    }
+</script>
+{% endblock %}

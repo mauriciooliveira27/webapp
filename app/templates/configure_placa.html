@@ -1,0 +1,30 @@
+
+{% extends "base.html" %}
+{% load humanize %}
+{% load static %}
+{% block content %}
+
+<div class="container">
+    
+    <h2>Configuração de Placa</h2>
+    <form action="{% url 'configuracao-placa' %}" method="post" class="form-container">
+        
+        {% csrf_token %}
+        <div class="form-group">
+            <label for="cod_placa">Código Placa:</label>
+            <input type="text" id="cod_placa" name="cod_placa" required>
+        </div>
+        <div class="form-group">
+            <label for="nome_placa">Nome Placa:</label>
+            <input type="text" id="nome_placa" name="nome_placa" required>
+        </div>
+        <div class="form-group">
+            <label for="ip_placa">IP Placa:</label>
+            <input type="text" id="ip_placa" name="ip_placa" required>
+        </div>
+        
+        <button type="submit" class="btn btn-primary">Salvar</button>
+    </form>
+</div>
+<link rel="stylesheet" href="{% static 'css/config.css' %}">
+{% endblock %}

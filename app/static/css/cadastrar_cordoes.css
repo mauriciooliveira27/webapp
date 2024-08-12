@@ -1,0 +1,9 @@
+.btn-link {
+    color: white; /* Definir a cor do texto como branco */
+    text-decoration: none; /* Remover sublinhado dos links */
+}
+
+/* Estilizar o hover dos links dentro dos botões */
+.btn-link:hover {
+    text-decoration: underline; /* Adicionar sublinhado ao passar o mouse sobre os links */
+}

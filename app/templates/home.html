@@ -1,0 +1,39 @@
+{% extends "base.html" %}
+{% load humanize %}
+
+{% block content %}
+<div class="container">
+    {% for msg in messages %}
+        <div class="alert alert-success" role="alert">
+            {{ msg }}
+        </div>
+        {% endfor %}
+    <h1>Placas</h1>
+    <table class="table table-striped">
+        <thead>
+            <tr>
+                <th>ID</th>
+                <th>Nome</th>
+                <th>IP Placa</th>
+                <th>Ação</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for placa in placas %}
+            <tr>
+                <td>{{ placa.id }}</td>
+                <td>{{ placa.nome }}</td>
+                <td>{{ placa.ip }}</td>
+                <td>
+                  <a class="btn btn-sm btn-warning" href="{% url 'update-placa' pk=placa.pk %}">Editar</a>
+                  <a class="btn btn-sm btn-danger" href="{% url 'delete-placa' pk=placa.pk %}">Deletar</a>
+                  <a class="btn btn-sm btn-primary" href="{% url 'update-cordoes'  %}">Editar Sensores</a>
+
+                </td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
